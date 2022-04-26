@@ -7,6 +7,7 @@ from itertools import combinations
 #################### SETUP #######################
 ##################################################
 file = "./portefeuille.csv"
+# file = '../dataset1_Python+P7.csv'
 max = 500
 
 ##################################################
@@ -17,10 +18,10 @@ max = 500
 def import_csv(file):
     p_dict = dict()
     with open(file, 'r') as csvfile:
-        reader = csv.DictReader(csvfile, delimiter=';')
+        reader = csv.DictReader(csvfile, delimiter=',')
         for row in reader:
-            p_dict[row['Actions']] = [float(row['Cout']), float(row['Benefice']),
-                                      float(row['Cout']) * float(row['Benefice']) / 100]
+            p_dict[row['name']] = [float(row['price']), float(
+                row['price']) * float(row['profit']) / 100]
     return p_dict
 
 
@@ -34,7 +35,7 @@ def get_comb(p_dict):
             [costs.append(p_dict[i][0]) for i in comb]
             total = sum(costs)
             if total <= max:
-                [rois.append(p_dict[i][2]) for i in comb]
+                [rois.append(p_dict[i][1]) for i in comb]
                 roi = sum(rois)
                 comb_total = (comb, total, roi)
                 comb_list.append(comb_total)
