@@ -2,6 +2,11 @@
 # -*- coding: utf-8 -*-
 import csv
 from itertools import combinations
+from argparse import ArgumentParser
+import time
+import tracemalloc
+import matplotlib.pyplot as plt
+
 
 ##################################################
 #################### SETUP #######################
@@ -9,6 +14,12 @@ from itertools import combinations
 file = "./portefeuille.csv"
 # file = '../dataset1_Python+P7.csv'
 max = 500
+
+parser = ArgumentParser()
+parser.add_argument('-a', '--analyse', action='store_true',
+                    help='an integer for the accumulator')
+args = parser.parse_args()
+
 
 ##################################################
 #################### FUNCTIONS ###################
@@ -42,16 +53,56 @@ def get_comb(p_dict):
     return comb_list
 
 
-##################################################
-#################### MAIN FUNCTION ###############
-##################################################
+def display_graph(list, y_label, title_label):
+    print(list)
+    x = range(1, len(list) + 1)
+    y = list
+    plt.plot(x, y)
+    plt.xlabel('x - Nb of Actions')
+    plt.ylabel('y - ' + y_label)
+    plt.title('bruteforce ' + title_label)
+    plt.show()
+
+    ##################################################
+    #################### MAIN FUNCTION ###############
+    ##################################################
 
 
 def main():
     p_dict = import_csv(file)
-    comb_list = get_comb(p_dict)
-    best_comb = sorted(comb_list, key=lambda x: (-x[2], -x[1]))[0]
-    print(best_comb)
+    if args.analyse:
+        time_list = list()
+        mem_list = list()
+        for i in range(1, len(p_dict) + 1):
+            p_dict_list = list(p_dict.keys())[0:i]
+            p_dict_test = dict()
+            for action in p_dict_list:
+                p_dict_test[action] = p_dict[action]
+            start = time.time()
+            comb_list = get_comb(p_dict_test)
+            best_comb = sorted(comb_list, key=lambda x: (-x[2], -x[1]))[0]
+            print(best_comb)
+            end = time.time()
+            elapsed = end - start
+            print(f'Temps d\'exécution : {elapsed:.2} s')
+            time_list.append(elapsed)
+            tracemalloc.start()
+            comb_list = get_comb(p_dict_test)
+            print(tracemalloc.get_traced_memory())
+            traced_mem = tracemalloc.get_traced_memory()
+            used_mem = traced_mem[1] - traced_mem[0]
+            mem_list.append(used_mem)
+            tracemalloc.stop()
+        display_graph(time_list, 'Execution time', 'Time Analyse')
+        display_graph(mem_list, 'Used Memory', 'Memory Analyse')
+    else:
+        start = time.time()
+        comb_list = get_comb(p_dict)
+        best_comb = sorted(comb_list, key=lambda x: (-x[2], -x[1]))[0]
+        print(best_comb)
+        end = time.time()
+        elapsed = end - start
+        print(f'Temps d\'exécution : {elapsed:.2} s')
 
 
 if __name__ == '__main__':
