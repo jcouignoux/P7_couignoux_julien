@@ -57,10 +57,10 @@ def get_comb(p_dict):
     return (tuple(best_comb), total, roi)
 
 
-def smooth(y, box_pts):
-    box = np.ones(box_pts)/box_pts
-    y_smooth = np.convolve(y, box, mode='same')
-    return y_smooth
+# def smooth(y, box_pts):
+#     box = np.ones(box_pts)/box_pts
+#     y_smooth = np.convolve(y, box, mode='same')
+#     return y_smooth
 
 
 def display_graph(list, y_label, title_label):
