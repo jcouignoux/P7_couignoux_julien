@@ -81,14 +81,11 @@ def main():
             start = time.time()
             comb_list = get_comb(p_dict_test)
             best_comb = sorted(comb_list, key=lambda x: (-x[2], -x[1]))[0]
-            print(best_comb)
             end = time.time()
             elapsed = end - start
-            print(f'Temps d\'exécution : {elapsed:.2} s')
             time_list.append(elapsed)
             tracemalloc.start()
             comb_list = get_comb(p_dict_test)
-            print(tracemalloc.get_traced_memory())
             traced_mem = tracemalloc.get_traced_memory()
             used_mem = traced_mem[1] - traced_mem[0]
             mem_list.append(used_mem)
@@ -98,11 +95,15 @@ def main():
     else:
         start = time.time()
         comb_list = get_comb(p_dict)
-        best_comb = sorted(comb_list, key=lambda x: (-x[2], -x[1]))[0]
-        print(best_comb)
+        best_comb = sorted(comb_list, key=lambda x: (-x[2], x[1]))[0]
         end = time.time()
+        print(f'Actions to buy:')
+        for action in best_comb[0]:
+            print(action)
+        print(f'Total cost: {best_comb[1]}')
+        print(f'Total return: {round(best_comb[2], 2)}')
         elapsed = end - start
-        print(f'Temps d\'exécution : {elapsed:.2} s')
+        print(f'Execution time: {elapsed:.2} s')
 
 
 if __name__ == '__main__':
